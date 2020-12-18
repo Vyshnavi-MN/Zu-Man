@@ -652,7 +652,7 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
 
     _setHeroImage(String strUrl) {
       return new Hero(
-        tag: 0,
+        tag: Text("$strUrl"),
         child: new Stack(
           children: <Widget>[
             new DecoratedBox(

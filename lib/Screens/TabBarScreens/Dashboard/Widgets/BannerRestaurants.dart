@@ -37,7 +37,7 @@ class BannerRestaurants extends StatelessWidget {
                       )));
             },
             child: new Hero(
-              tag: index,
+              tag: Text("$index"),
               child: new Container(
                   padding:
                       new EdgeInsets.only(left: 5, right: 5, top: 8, bottom: 8),
