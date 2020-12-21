@@ -6,10 +6,12 @@ import 'package:product/Helper/CommonWidgets.dart';
 import 'package:product/Helper/Constant.dart';
 import 'package:product/Helper/SharedManaged.dart';
 import 'package:product/ModelClass/ModelRestaurantDetails.dart';
+import 'package:product/Screens/BannerDetailsScreen/Widgets/ReviewWidgets/notifiers.dart';
 import 'package:product/Screens/Cart/Cart.dart';
 import 'package:product/Screens/ReviewListScreen/ReviewListScreen.dart';
 import 'package:product/generated/i18n.dart';
 import 'package:product/Screens/CheckOut/Checkout.dart';
+import 'package:provider/provider.dart';
 
 import 'Widgets/ReviewWidgets/ReviewWidgets.dart';
 
@@ -320,13 +322,15 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
   }
 
   List<Subcategories> subcatList = [];
-  int _counter = 1;
+  int _counter = 0;
+  double _price = 0;
   int _boundryValue = 0;
   bool changecolor = false;
-  void _incrementCount() {
+  void _incrementCount(String price) {
     setState(() {
       _counter++;
     });
+    _price += double.parse(price);
   }
 
   void _decrementCounter() {
@@ -334,6 +338,10 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
       if (_counter != 0) _counter--;
     });
   }
+
+  bool checkboxValueCity = false;
+  List<String> allAddOns = ['Cheese', 'Bakes', 'Extra Sauce'];
+  List<String> selectedAddOns = [];
 
   _setDynamicCategory(int subCatCount, dynamic data, double width) {
     return Container(
@@ -343,7 +351,7 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
         context: context,
         removeTop: true,
         child: new ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
+          // physics: NeverScrollableScrollPhysics(),
           itemCount: subcatList.length,
           // itemCount: 2,
           itemBuilder: (context, row) {
@@ -360,248 +368,348 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
                           color: AppColor.grey[300],
                           offset: Offset(0, 0))
                     ]),
-                child: new Row(
-                  children: <Widget>[
-                    new Stack(
+                child: new Column(
+                  children: [
+                    new Row(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
+                        new Stack(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: new Container(
+                                width: 85,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                          NetworkImage(subcatList[row].image),
+                                      fit: BoxFit.cover),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        new Expanded(
+                          flex: 2,
                           child: new Container(
-                            width: 85,
-                            height: 85,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(subcatList[row].image),
-                                  fit: BoxFit.cover),
+                            // color: AppColor.red,
+                            child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                new Row(
+                                  children: <Widget>[
+                                    new Expanded(
+                                        flex: 2,
+                                        child: setCommonText(
+                                            subcatList[row].name,
+                                            AppColor.black,
+                                            14.0,
+                                            FontWeight.w500,
+                                            1)),
+                                    // SizedBox(width: 5,),
+                                  ],
+                                ),
+                                setCommonText(subcatList[row].catigoryName,
+                                    AppColor.black54, 13.0, FontWeight.w500, 1),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                setCommonText(
+                                    subcatList[row].description,
+                                    AppColor.grey[600],
+                                    12.0,
+                                    FontWeight.w400,
+                                    2),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                new Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    new Row(
+                                      children: <Widget>[
+                                        new Stack(
+                                          alignment: Alignment.center,
+                                          children: <Widget>[
+                                            setCommonText(
+                                                '${Currency.curr}${subcatList[row].price}',
+                                                AppColor.grey[600],
+                                                12.0,
+                                                FontWeight.w600,
+                                                1),
+                                            new Container(
+                                              height: 2,
+                                              width: 40,
+                                              color: AppColor.grey[700],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        setCommonText(
+                                          '${Currency.curr}${double.parse(subcatList[row].price) - double.parse(subcatList[row].discount)}',
+                                          AppColor.black,
+                                          12.0,
+                                          FontWeight.w700,
+                                          1,
+                                        ),
+                                        
+                                      ],
+                                    ),
+                                    subcatList[row]
+                                            .isAdded // Added Quantity Counter Button
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              // color: AppColor.themeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(2.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // Material(
+                                                  //   borderRadius:
+                                                  //       BorderRadius.circular(15),
+                                                  //   child: InkWell(
+                                                  //     borderRadius:
+                                                  //         BorderRadius.circular(15),
+                                                  //     onTap: () {
+                                                  //       setState(
+                                                  //         () {
+                                                  //           if (subcatList[row]
+                                                  //                   .count !=
+                                                  //               0)
+                                                  //             subcatList[row]
+                                                  //                     .count =
+                                                  //                 subcatList[row]
+                                                  //                         .count -
+                                                  //                     1;
+                                                  //           if (subcatList[row]
+                                                  //                   .count <
+                                                  //               1) {
+                                                  //             subcatList[row]
+                                                  //                 .isAdded = false;
+
+                                                  //             subcatList[row]
+                                                  //                 .count = 1;
+
+                                                  //             this.itemCount =
+                                                  //                 _setItemCount(
+                                                  //                     subcatList);
+                                                  //           }
+                                                  //         },
+                                                  //       );
+                                                  //     },
+                                                  //     child: Container(
+                                                  //       decoration: BoxDecoration(
+                                                  //         borderRadius:
+                                                  //             BorderRadius.circular(
+                                                  //                 15),
+                                                  //         border: Border.all(
+                                                  //             color: Colors.white),
+                                                  //       ),
+                                                  //       child: Icon(
+                                                  //         Icons.remove,
+                                                  //         color: Colors.black,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 15,
+                                                            right: 15),
+                                                    child: Text(
+                                                      "${subcatList[row].count}",
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 25,
+                                                    // width: 50,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: AppColor
+                                                                .themeColor)),
+                                                    padding:
+                                                        new EdgeInsets.all(2),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        _incrementCount(
+                                                            subcatList[row]
+                                                                .price);
+                                                        setState(() {
+                                                          subcatList[row]
+                                                                  .count =
+                                                              subcatList[row]
+                                                                      .count +
+                                                                  1;
+                                                        });
+                                                      },
+                                                      child: new Material(
+                                                        color: AppColor.white,
+                                                        borderRadius:
+                                                            new BorderRadius
+                                                                .circular(10),
+                                                        child: new Center(
+                                                          child: setCommonText(
+                                                            '  ${S.current.add_plus}  ',
+                                                            AppColor.themeColor,
+                                                            10.0,
+                                                            FontWeight.w500,
+                                                            1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // Container(
+                                                  //   decoration: BoxDecoration(
+                                                  //     // color: AppColor.themeColor,
+                                                  //     border: Border.all(
+                                                  //       color: Colors.black,
+                                                  //     ),
+                                                  //     borderRadius:
+                                                  //         BorderRadius.circular(4),
+                                                  //   ),
+                                                  //   child: InkWell(
+                                                  //     borderRadius:
+                                                  //         BorderRadius.circular(15),
+                                                  //     onTap: () {
+                                                  //       _incrementCount(subcatList[row].price);
+                                                  //       setState(() {
+                                                  //         subcatList[row].count =
+                                                  //             subcatList[row]
+                                                  //                     .count +
+                                                  //                 1;
+                                                  //       });
+                                                  //     },
+                                                  //     child: new Center(
+                                                  //       child: setCommonText(
+                                                  //         S.current.add_plus,
+                                                  //         AppColor.themeColor,
+                                                  //         12.0,
+                                                  //         FontWeight.w600,
+                                                  //         1,
+                                                  //       ),
+                                                  //     ),
+                                                  //     // child: Container(
+                                                  //     //   decoration: BoxDecoration(
+                                                  //     //     borderRadius:
+                                                  //     //         BorderRadius.circular(
+                                                  //     //             15),
+                                                  //     //     border: Border.all(
+                                                  //     //         color: Colors.white),
+                                                  //     //   ),
+                                                  //     //   child: Icon(
+                                                  //     //     Icons.add,
+                                                  //     //     color: Colors.black,
+                                                  //     //   ),
+                                                  //     // ),
+                                                  //   ),
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: new Container(
+                                              height: 30,
+                                              width: 60,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  _incrementCount(
+                                                      subcatList[row].price);
+                                                  if (subcatList[row]
+                                                          .isAvailable ==
+                                                      '1') {
+                                                    setState(() {
+                                                      if (subcatList[row]
+                                                          .isAdded) {
+                                                        subcatList[row]
+                                                            .isAdded = false;
+                                                      } else {
+                                                        subcatList[row]
+                                                            .isAdded = true;
+                                                      }
+                                                      this.itemCount =
+                                                          _setItemCount(
+                                                              subcatList);
+                                                    });
+                                                  } else {
+                                                    commonItemOutofStockAlert(
+                                                        context);
+                                                  }
+                                                },
+                                                child: new Center(
+                                                  // child: subcatList[row].isAdded
+                                                  //     ? setCommonText(
+                                                  //         S.current.added,
+                                                  //         AppColor.red,
+                                                  //         12.0,
+                                                  //         FontWeight.w600,
+                                                  //         1)
+                                                  child: setCommonText(
+                                                      S.current.add_plus,
+                                                      AppColor.themeColor,
+                                                      12.0,
+                                                      FontWeight.w600,
+                                                      1),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                         ),
                       ],
                     ),
-                    new Expanded(
-                      flex: 2,
-                      child: new Container(
-                        // color: AppColor.red,
-                        child: new Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            new Row(
-                              children: <Widget>[
-                                new Expanded(
-                                    flex: 2,
-                                    child: setCommonText(
-                                        subcatList[row].name,
-                                        AppColor.black,
-                                        14.0,
-                                        FontWeight.w500,
-                                        1)),
-                                // SizedBox(width: 5,),
-                              ],
-                            ),
-                            setCommonText(subcatList[row].catigoryName,
-                                AppColor.black54, 13.0, FontWeight.w500, 1),
-                            SizedBox(
-                              height: 2,
-                            ),
-                            setCommonText(subcatList[row].description,
-                                AppColor.grey[600], 12.0, FontWeight.w400, 2),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                new Row(
-                                  children: <Widget>[
-                                    new Stack(
-                                      alignment: Alignment.center,
-                                      children: <Widget>[
-                                        setCommonText(
-                                            '${Currency.curr}${subcatList[row].price}',
-                                            AppColor.grey[600],
-                                            12.0,
-                                            FontWeight.w600,
-                                            1),
-                                        new Container(
-                                          height: 2,
-                                          width: 40,
-                                          color: AppColor.grey[700],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 3,
-                                    ),
-                                    setCommonText(
-                                        '${Currency.curr}${double.parse(subcatList[row].price) - double.parse(subcatList[row].discount)}',
-                                        AppColor.black,
-                                        12.0,
-                                        FontWeight.w700,
-                                        1),
-                                  ],
-                                ),
-                                subcatList[row]
-                                        .isAdded // Added Quantity Counter Button
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColor.themeColor,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Material(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  onTap: () {
-                                                    setState(
-                                                      () {
-                                                        if (subcatList[row]
-                                                                .count !=
-                                                            0)
-                                                          subcatList[row]
-                                                                  .count =
-                                                              subcatList[row]
-                                                                      .count -
-                                                                  1;
-                                                        if (subcatList[row]
-                                                                .count <
-                                                            1) {
-                                                          subcatList[row]
-                                                              .isAdded = false;
-
-                                                          subcatList[row]
-                                                              .count = 1;
-
-                                                          this.itemCount =
-                                                              _setItemCount(
-                                                                  subcatList);
-                                                        }
-                                                      },
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      border: Border.all(
-                                                          color: Colors.white),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.remove,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 15, right: 15),
-                                                child: Text(
-                                                  "${subcatList[row].count}",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                              Material(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  onTap: () {
-                                                    setState(() {
-                                                      subcatList[row].count =
-                                                          subcatList[row]
-                                                                  .count +
-                                                              1;
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      border: Border.all(
-                                                          color: Colors.white),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.add,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8.0),
-                                        child: new Container(
-                                          height: 30,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(),
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: InkWell(
-                                            onTap: () {
-                                              if (subcatList[row].isAvailable ==
-                                                  '1') {
-                                                setState(() {
-                                                  if (subcatList[row].isAdded) {
-                                                    subcatList[row].isAdded =
-                                                        false;
-                                                  } else {
-                                                    subcatList[row].isAdded =
-                                                        true;
-                                                  }
-                                                  this.itemCount =
-                                                      _setItemCount(subcatList);
-                                                });
-                                              } else {
-                                                commonItemOutofStockAlert(
-                                                    context);
-                                              }
-                                            },
-                                            child: new Center(
-                                              // child: subcatList[row].isAdded
-                                              //     ? setCommonText(
-                                              //         S.current.added,
-                                              //         AppColor.red,
-                                              //         12.0,
-                                              //         FontWeight.w600,
-                                              //         1)
-                                              child: setCommonText(
-                                                  S.current.add_plus,
-                                                  AppColor.themeColor,
-                                                  12.0,
-                                                  FontWeight.w600,
-                                                  1),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                              ],
-                            )
-                          ],
-                        ),
+                    RaisedButton(
+                      key: widget.key,
+                      child: setCommonText(
+                        "Add-ons",
+                        AppColor.themeColor,
+                        12.0,
+                        FontWeight.w600,
+                        1,
                       ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return _MyDialog(
+                                  addOns: allAddOns,
+                                  selectedAddOns: selectedAddOns,
+                                  onSelectedAddOnsListChanged: (addOns) {
+                                    selectedAddOns = addOns;
+                                    print(selectedAddOns);
+                                  });
+                            });
+                      },
                     ),
                   ],
                 ),
+
+                // children: ,
               ),
             );
           },
@@ -636,7 +744,8 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
         count = count + 1;
         price = price +
             (double.parse(subcategoryList[j].price) -
-                double.parse(subcategoryList[j].discount));
+                    double.parse(subcategoryList[j].discount)) *
+                subcategoryList[j].count;
         SharedManager.shared.cartItems.add(subcategoryList[j]);
       }
     }
@@ -771,103 +880,108 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
           child: (this.itemCount > 0)
               ? new Container(
                   color: AppColor.white,
-                  height: 50,
+                  height: 40,
                   child: new Material(
-                      color: AppColor.themeColor,
-                      borderRadius: new BorderRadius.circular(30),
-                      child: new Container(
-                        padding: new EdgeInsets.only(left: 20, right: 15),
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                new Text(
-                                  "${this.itemCount} ${S.current.items}",
-                                  style: new TextStyle(
-                                      color: AppColor.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
+                    color: AppColor.themeColor,
+                    borderRadius: new BorderRadius.circular(30),
+                    child: new Container(
+                      padding: new EdgeInsets.only(left: 20, right: 15),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Text(
+                                /*"${this.itemCount}*/ "${S.current.items} : $_counter",
+                                style: new TextStyle(
+                                  color: AppColor.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                SizedBox(
-                                  height: 3,
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                              new Text(
+                                "${S.current.totals} ${Currency.curr}${_price}",
+                                style: new TextStyle(
+                                  color: AppColor.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                new Text(
-                                  "${S.current.totals} ${Currency.curr}${this.totlaPrice}",
-                                  style: new TextStyle(
-                                      color: AppColor.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              ],
-                            ),
-                            new Row(
-                              children: <Widget>[
-                                new GestureDetector(
-                                  onTap: () {
-                                    if (result.isAvailable == '1') {
-                                      List<Subcategories> listData = [];
-                                      for (int i = 0;
-                                          i < this.result.categories.length;
-                                          i++) {
-                                        List<Subcategories> subList = this
-                                            .result
-                                            .categories[i]
-                                            .subcategories;
-                                        for (int j = 0;
-                                            j < subList.length;
-                                            j++) {
-                                          if (subList[j].isAdded) {
-                                            listData.add(subList[j]);
-                                          }
+                              ),
+                            ],
+                          ),
+                          new Row(
+                            children: <Widget>[
+                              new GestureDetector(
+                                onTap: () {
+                                  if (result.isAvailable == '1') {
+                                    List<Subcategories> listData = [];
+                                    for (int i = 0;
+                                        i < this.result.categories.length;
+                                        i++) {
+                                      List<Subcategories> subList = this
+                                          .result
+                                          .categories[i]
+                                          .subcategories;
+                                      for (int j = 0; j < subList.length; j++) {
+                                        if (subList[j].isAdded) {
+                                          listData.add(subList[j]);
                                         }
                                       }
-                                      SharedManager.shared.cartItems = listData;
-                                      SharedManager.shared.resAddress =
-                                          this.result.address;
-                                      SharedManager.shared.resImage =
-                                          this.result.bannerImage;
-                                      SharedManager.shared.resName =
-                                          this.result.name;
-                                      SharedManager.shared.isFromTab = false;
-
-                                      if ((SharedManager.shared
-                                              .isLoggedIN == // added the condition to the Addons Dialog if user is not login
-                                          'yes')) {
-                                        setState(() {
-                                          _modalBottomSheetMenu(); // Added Bottom Model Sheet for Addones
-                                        });
-                                        _setTotalPriceCount(); // added setState to refelect the amount to botomModelSheet
-
-                                      } else
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CartApp()));
-                                    } else {
-                                      commonRestaurantCloseAlert(context);
                                     }
-                                  },
-                                  child: new Text(
-                                    S.current.view_cart,
-                                    style: new TextStyle(
-                                        fontSize: 16,
-                                        color: AppColor.white,
-                                        fontWeight: FontWeight.w600),
+                                    SharedManager.shared.cartItems = listData;
+                                    SharedManager.shared.resAddress =
+                                        this.result.address;
+                                    SharedManager.shared.resImage =
+                                        this.result.bannerImage;
+                                    SharedManager.shared.resName =
+                                        this.result.name;
+                                    SharedManager.shared.isFromTab = false;
+
+                                    if ((SharedManager.shared
+                                            .isLoggedIN == // added the condition to the Addons Dialog if user is not login
+                                        'yes')) {
+                                      setState(() {
+                                        _modalBottomSheetMenu(); // Added Bottom Model Sheet for Addones
+                                      });
+                                      _setTotalPriceCount(); // added setState to refelect the amount to botomModelSheet
+
+                                    } else
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => CartApp(),
+                                        ),
+                                      );
+                                  } else {
+                                    commonRestaurantCloseAlert(context);
+                                  }
+                                },
+                                child: new Text(
+                                  S.current.view_cart,
+                                  style: new TextStyle(
+                                    fontSize: 16,
+                                    color: AppColor.white,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                new Icon(Icons.arrow_forward,
-                                    color: AppColor.white)
-                              ],
-                            )
-                          ],
-                        ),
-                      )),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              new Icon(
+                                Icons.arrow_forward,
+                                color: AppColor.white,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 )
               : null),
     );
@@ -1522,4 +1636,103 @@ class _BannerDetailsScreenState extends State<BannerDetailsScreen> {
     this.paidPrice = total;
     this.totalPrice = totalWithDis;
   }
+}
+
+class _MyDialog extends StatefulWidget {
+  _MyDialog({
+    this.addOns,
+    this.selectedAddOns,
+    this.onSelectedAddOnsListChanged,
+  });
+
+  final List<String> addOns;
+  final List<String> selectedAddOns;
+  final ValueChanged<List<String>> onSelectedAddOnsListChanged;
+
+  @override
+  _MyDialogState createState() => _MyDialogState();
+}
+
+class _MyDialogState extends State<_MyDialog> {
+  List<String> _tempSelectedAddOns = [];
+
+  @override
+  void initState() {
+    _tempSelectedAddOns = widget.selectedAddOns;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+          // key: widget.key,
+          content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      'AddOns',
+                      style: TextStyle(fontSize: 18.0, color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    color: Color(0xFFfab82b),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+
+              Container(
+                height: MediaQuery.of(context).size.height * 0.30, 
+                width: 300.0,
+                child: ListView.builder(
+                    key: widget.key,
+                    // shrinkWrap = true,
+                    itemCount: widget.addOns.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final addOnsName = widget.addOns[index];
+                      return Container(
+                        // height: MediaQuery.of(context).size.height * 0.35,
+                        child: CheckboxListTile(
+                            title: Text(addOnsName),
+                            value: _tempSelectedAddOns.contains(addOnsName),
+                            onChanged: (bool value) {
+                              if (value) {
+                                if (!_tempSelectedAddOns.contains(addOnsName)) {
+                                  setState(() {
+                                    _tempSelectedAddOns.add(addOnsName);
+                                  });
+                                }
+                              } else {
+                                if (_tempSelectedAddOns.contains(addOnsName)) {
+                                  setState(() {
+                                    _tempSelectedAddOns.removeWhere(
+                                        (String city) => city == addOnsName);
+                                  });
+                                }
+                              }
+                              widget
+                                  .onSelectedAddOnsListChanged(_tempSelectedAddOns);
+                            }),
+                      );
+                    }),
+              ),
+            ],
+          ),
+          ),
+        );
+    }
+    
 }

@@ -80,7 +80,6 @@ class _SignUpPageState extends State<SignUpPage> {
     if (data.code == 1) {
       emailController.text = '';
       passwordController.text = '';
-      // phoneController.text = '';
       userNameController.text = '';
       await SharedManager.shared.storeString("yes", "isLoogedIn");
       await SharedManager.shared.storeUserLoginData(data);
@@ -201,8 +200,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       Container(
                         child: InternationalPhoneInput(
                           onPhoneNumberChange: _onPhoneNumberChange,
+                          enabledCountries: ['+63'],
                           initialPhoneNumber: phoneNumber,
-                          initialSelection: "+91",
+                          initialSelection: "+63",
                           hintText: '${S.current.phone}',
                         ),
                       ),

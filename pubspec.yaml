@@ -55,6 +55,7 @@ dependencies:
   progressive_image:
   international_phone_input: ^1.0.4
   pinput: ^0.2.6
+  provider: ^4.3.1
  
 
 

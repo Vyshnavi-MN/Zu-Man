@@ -296,6 +296,12 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///C:/Users/mnvys/Desktop/flutter_apps/flutter/.pub-cache/hosted/pub.dartlang.org/nested-0.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
       "name": "notifier",
       "rootUri": "file:///C:/Users/mnvys/Desktop/flutter_apps/flutter/.pub-cache/hosted/pub.dartlang.org/notifier-1.0.2",
       "packageUri": "lib/",
@@ -342,6 +348,12 @@
       "rootUri": "file:///C:/Users/mnvys/Desktop/flutter_apps/flutter/.pub-cache/hosted/pub.dartlang.org/progressive_image-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.1"
+    },
+    {
+      "name": "provider",
+      "rootUri": "file:///C:/Users/mnvys/Desktop/flutter_apps/flutter/.pub-cache/hosted/pub.dartlang.org/provider-4.3.2+3",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
     },
     {
       "name": "pub_semver",
@@ -494,7 +506,7 @@
       "languageVersion": "2.3"
     }
   ],
-  "generated": "2020-12-18T08:22:40.035470Z",
+  "generated": "2020-12-21T04:42:45.804145Z",
   "generator": "pub",
   "generatorVersion": "2.10.3"
 }

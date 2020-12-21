@@ -47,6 +47,19 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   var discountedPrice = 0.0;
   var grandTotalAmount = 0.0;
   InterstitialAd myInterstitial;
+  int _counter = 0;
+  double _price = 0;
+  void _incrementCount(String price) {
+    setState(() {
+      _counter++;
+    });
+    _price += double.parse(price);
+  }
+
+  bool checkboxValueCity = false;
+  List<String> allAddOns = ['Cheese', 'Bakes', 'Extra Sauce'];
+  List<String> selectedAddOns = [];
+  
   _setImageStackView(double width, String bannerImage, String resName) {
     return new Stack(
       children: <Widget>[
@@ -122,6 +135,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
       ],
     );
   }
+
+
 
   _calling() async {
     final url = 'tel:${result.phone}';
@@ -515,7 +530,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                     color: AppColor.white,
                     elevation: 3.0,
                     borderRadius: new BorderRadius.circular(5),
-                    child: new Row(
+                    child: new Column(
+                      children: [
+                      new Row(
                       children: <Widget>[
                         Stack(
                           children: <Widget>[
@@ -578,7 +595,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                   height: 2,
                                 ),
                                 setCommonText(subcategories[row].description,
-                                    AppColor.grey, 12.0, FontWeight.w400, 2),
+                                    AppColor.grey, 12.0, FontWeight.w400, 3),
                                 SizedBox(height: 4),
                                 new Row(
                                   mainAxisAlignment:
@@ -613,76 +630,17 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                             1),
                                       ],
                                     ),
-                                    subcategories[row]
+                                    new Column(
+                                      children: [
+                                        subcategories[row]
                                             .isAdded // Added Quantity Counter Button
                                         ? Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColor.themeColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(2.0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                    child: InkWell(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      onTap: () {
-                                                        setState(
-                                                          () {
-                                                            if (subcategories[
-                                                                        row]
-                                                                    .count !=
-                                                                0)
-                                                              subcategories[row]
-                                                                      .count =
-                                                                  subcategories[
-                                                                              row]
-                                                                          .count -
-                                                                      1;
-                                                            if (subcategories[
-                                                                        row]
-                                                                    .count <
-                                                                1) {
-                                                              subcategories[row]
-                                                                      .isAdded =
-                                                                  false;
-
-                                                              subcategories[row]
-                                                                  .count = 1;
-
-                                                              this.itemCount =
-                                                                  _setItemCount(
-                                                                      categories);
-                                                            }
-                                                          },
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.remove,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
                                                   Padding(
                                                     padding:
                                                         const EdgeInsets.only(
@@ -691,45 +649,42 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                                     child: Text(
                                                       "${subcategories[row].count}",
                                                       style: TextStyle(
-                                                        color: Colors.white,
+                                                        color: Colors.red,
                                                         fontSize: 16,
                                                       ),
                                                     ),
                                                   ),
-                                                  Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
+                                                  Container(
+                                                    height: 25,
+                                                    // width: 50,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color:
+                                                                AppColor.themeColor)),
+                                                    padding: new EdgeInsets.all(2),
                                                     child: InkWell(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
                                                       onTap: () {
+                                                        _incrementCount(subcategories[row].price);
                                                         setState(() {
-                                                          subcategories[row]
-                                                                  .count =
-                                                              subcategories[row]
-                                                                      .count +
-                                                                  1;
+                                                                  subcategories[row].count = subcategories[row].count + 1;
                                                         });
                                                       },
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.add,
-                                                          color: Colors.black,
+                                                      child: new Material(
+                                                        color: AppColor.white,
+                                                        borderRadius:
+                                                            new BorderRadius.circular(
+                                                                10),
+                                                        child: new Center(
+                                                          child: setCommonText(
+                                                              '  ${S.current.add_plus}  ',
+                                                              AppColor.themeColor,
+                                                              10.0,
+                                                              FontWeight.w500,
+                                                              1),
                                                         ),
                                                       ),
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -744,6 +699,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                             padding: new EdgeInsets.all(2),
                                             child: InkWell(
                                               onTap: () {
+                                                _incrementCount(subcategories[row].price);
                                                 if (subcategories[row]
                                                         .isAvailable ==
                                                     '1') {
@@ -781,10 +737,71 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                               ),
                                             ),
                                           ),
+                                          new Container(
+                                            height: 25,
+                                            // width: 50,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color:
+                                                        AppColor.themeColor)),
+                                            padding: new EdgeInsets.all(2),
+                                            child: InkWell(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return _MyDialog(
+                                                        addOns: allAddOns,
+                                                        selectedAddOns: selectedAddOns,
+                                                        onSelectedAddOnsListChanged: (addOns) {
+                                                          selectedAddOns = addOns;
+                                                          print(selectedAddOns);
+                                                        });
+                                                  });
+                                              },
+                                              child: new Material(
+                                                color: AppColor.white,
+                                                borderRadius:
+                                                    new BorderRadius.circular(
+                                                        10),
+                                                child: new Center(
+                                                  child: setCommonText(
+                                                      '  Add-Ons  ',
+                                                      AppColor.themeColor,
+                                                      10.0,
+                                                      FontWeight.w500,
+                                                      1),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          // RaisedButton(
+                                          //   key: widget.key,
+                                          //   child: setCommonText(
+                                          //     "Add-ons",
+                                          //     AppColor.themeColor,
+                                          //     12.0,
+                                          //     FontWeight.w600,
+                                          //     1,
+                                          //   ),
+                                          //   onPressed: () {
+                                          //     showDialog(
+                                          //         context: context,
+                                          //         builder: (context) {
+                                          //           return _MyDialog(
+                                          //               addOns: allAddOns,
+                                          //               selectedAddOns: selectedAddOns,
+                                          //               onSelectedAddOnsListChanged: (addOns) {
+                                          //                 selectedAddOns = addOns;
+                                          //                 print(selectedAddOns);
+                                          //               });
+                                          //         });
+                                          //   },
+                                          // ),
+
+                                      ],
+                                    ),
                                   ],
-                                ),
-                                SizedBox(
-                                  height: 2,
                                 ),
                               ],
                             ),
@@ -792,6 +809,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                         ),
                       ],
                     ),
+                    ]
+                  ),
                   ),
                 );
               },
@@ -994,7 +1013,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         setCommonText(
-                                            '${this.itemCount} ${S.current.items}',
+                                            // '${this.itemCount} ${S.current.items}',
+                                            '${S.current.items} : ${_counter}',
                                             AppColor.white,
                                             12.0,
                                             FontWeight.w600,
@@ -1003,11 +1023,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                           height: 3,
                                         ),
                                         setCommonText(
-                                            '${S.current.totals} ${Currency.curr}${this.totlaPrice}',
-                                            AppColor.white,
-                                            12.0,
-                                            FontWeight.w600,
-                                            1),
+                                          // '${S.current.totals} ${Currency.curr}${this.totlaPrice}',
+                                          '${S.current.totals} ${Currency.curr}${_price}',
+                                          AppColor.white,
+                                          12.0,
+                                          FontWeight.w600,
+                                          1,
+                                        ),
                                       ],
                                     ),
                                     new Row(
@@ -1829,3 +1851,101 @@ Expanded(
                                       ),
                                     )
 */
+class _MyDialog extends StatefulWidget {
+  _MyDialog({
+    this.addOns,
+    this.selectedAddOns,
+    this.onSelectedAddOnsListChanged,
+  });
+
+  final List<String> addOns;
+  final List<String> selectedAddOns;
+  final ValueChanged<List<String>> onSelectedAddOnsListChanged;
+
+  @override
+  _MyDialogState createState() => _MyDialogState();
+}
+
+class _MyDialogState extends State<_MyDialog> {
+  List<String> _tempSelectedAddOns = [];
+
+  @override
+  void initState() {
+    _tempSelectedAddOns = widget.selectedAddOns;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+          // key: widget.key,
+          content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      'AddOns',
+                      style: TextStyle(fontSize: 18.0, color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    color: Color(0xFFfab82b),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+
+              Container(
+                height: MediaQuery.of(context).size.height * 0.30, 
+                width: 300.0,
+                child: ListView.builder(
+                    key: widget.key,
+                    // shrinkWrap = true,
+                    itemCount: widget.addOns.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final addOnsName = widget.addOns[index];
+                      return Container(
+                        // height: MediaQuery.of(context).size.height * 0.35,
+                        child: CheckboxListTile(
+                            title: Text(addOnsName),
+                            value: _tempSelectedAddOns.contains(addOnsName),
+                            onChanged: (bool value) {
+                              if (value) {
+                                if (!_tempSelectedAddOns.contains(addOnsName)) {
+                                  setState(() {
+                                    _tempSelectedAddOns.add(addOnsName);
+                                  });
+                                }
+                              } else {
+                                if (_tempSelectedAddOns.contains(addOnsName)) {
+                                  setState(() {
+                                    _tempSelectedAddOns.removeWhere(
+                                        (String city) => city == addOnsName);
+                                  });
+                                }
+                              }
+                              widget
+                                  .onSelectedAddOnsListChanged(_tempSelectedAddOns);
+                            }),
+                      );
+                    }),
+              ),
+            ],
+          ),
+          ),
+        );
+    }
+    
+}

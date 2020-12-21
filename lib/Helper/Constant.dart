@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 //All Api placed in this class.
 //Just replace with existing base url here.
 class APIS {
-  static var baseurl = "http://18.222.150.207/foodzone/webservices/";
+  static var baseurl =
+      "https://zumandeliverysolution.com/zu-man/index.php/Webservices/";
   // static var baseurl = "http://18.191.219.230/foodorders/webservices/";
   //http://18.222.150.207/foodzone/
 
@@ -136,7 +137,7 @@ Color hexToColor(String code) {
 }
 
 class Currency {
-  static const curr = '\$';
+  static const curr = '\₱';
   // static const curr = '₹';
   // static const curr = ''';
 }

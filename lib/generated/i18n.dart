@@ -67,7 +67,7 @@ class S implements WidgetsLocalizations {
   String get valid_for_driver =>
       "Valid if you pay online.All amount will be transferred to driver";
   String get apply_CouponCode => "Apply Coupon Code";
-  String get charges => "Charges";
+  String get charges => "Delivery Fee";
   String get total_amount => "Your Total Amount";
   String get grand_total => "Grand Total";
   String get personal_details => "Personal Details";
